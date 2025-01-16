@@ -1,7 +1,7 @@
 import { BASE_URL, IMAGE_BASE_URL, LANGUAGE, DUMMY_BASE_URL } from "./api.js";
 import { setupLogoEvent, createLoadMoreButton } from "./utils.js";
-import { openModal } from "./modal.js";
-import { toggleBookmark, isMovieBookmarked } from "./bookmark.js";
+import { openModal } from "./modal.js"
+import { toggleBookmark, isMovieBookmarked } from "./bookmark.js"
 
 let isLoading = false; // 데이터 로딩 중인지 여부를 추적하는 변수
 let currentPage = 1; // 현재 페이지를 추적하는 변수
@@ -13,7 +13,7 @@ let searchQuery = ""; // 검색어를 저장하는 변수
 // 외부 상태 관리 객체
 const state = {
   isSearchMode: { value: false },
-  currentPage: { value: 1 },
+  currentPage: { value: 1},
   searchQuery: { value: "" },
 };
 
@@ -91,6 +91,7 @@ function renderMovies(movies) {
 
         const isBookmarked = isMovieBookmarked(movie.id); // 상태 확인 후 업데이트
         event.target.textContent = isBookmarked ? "💖" : "🤍";
+
       });
 
     // ✅ 영화 카드를 목록에 추가
@@ -127,13 +128,13 @@ async function getPopularMovies() {
 }
 
 async function searchMovies() {
-  const query = document.getElementById("search-input").value;
+    const query = document.getElementById("search-input").value;
 
   if (!query) {
     isSearchMode = false;
     // state.isSearchMode.value = false;
     currentPage = 1;
-    // currentPage = currentPage || 1;
+    // currentPage = currentPage || 1; 
     // state.currentPage.value = 1;
     getPopularMovies();
     updateURL(""); // URL에서 query 파라미터 삭제
@@ -146,7 +147,7 @@ async function searchMovies() {
   isSearchMode = true;
   searchQuery = query;
   currentPage = 1; // 검색 시에는 첫 페이지부터 시작
-  // currentPage = currentPage || 1;
+  // currentPage = currentPage || 1; 
 
   // 해당 기능 비활성화
   sessionStorage.setItem("searchQuery", query);
@@ -176,6 +177,7 @@ async function searchMovies() {
     const movieList = document.getElementById("movie-list");
     movieList.innerHTML = "";
   }
+
 
   console.log("검색 결과 체크 : ", data.results);
   // 검색 결과가 없으면 전체 목록을 가져옵니다.
@@ -214,6 +216,7 @@ async function searchMovies() {
 
 // 페이지가 로드될 때 북마크 목록을 화면에 출력
 window.onload = function () {
+
   const storedQuery = sessionStorage.getItem("searchQuery"); // 저장된 검색어 가져오기
   const searchInput = document.getElementById("search-input");
 

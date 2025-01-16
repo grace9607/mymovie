@@ -8,6 +8,7 @@ body {
 
 .container {
   padding: 20px;
+  align-items: center; /* 수직 가운데 정렬 */
   text-align: center;
 }
 
@@ -22,7 +23,7 @@ h1 {
 }
 
 .search {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .search input {
@@ -49,12 +50,37 @@ h1 {
   transform: scale(1.05); /* 버튼 크기 확대 */
 }
 
+/* 헤더 컨테이너 스타일 */
+.header-container {
+  display: flex; /* 가로 정렬 */
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+  height: 145px; /* 헤더 높이 설정 */
+  margin-bottom: 00px; /* 헤더와 검색창 사이 간격 */
+}
+
+/* 팝콘 아이콘 스타일 */
+.logo-icon {
+  margin: -20px;
+  width: 150px; /* 아이콘 너비 */
+  height: 150px; /* 아이콘 높이 */
+  margin-right: -25px; /* 아이콘과 텍스트 간격 */
+  margin-left: -40px; /* 텍스트를 왼쪽으로 이동 */
+}
+
 /* 로고 링크 스타일 */
 #logo {
+  font-family: "Luckiest Guy", cursive;
   text-decoration: none; /* 밑줄 제거 */
   color: #333333; /* 글자 색상 변경 (어두운 회색) */
-  font-weight: bold; /* 글자를 굵게 */
-  font-size: 32px; /* 글자 크기 조정 */
+  font-weight: bold;
+  font-size: 52px;
+}
+
+.luckiest-guy-regular {
+  font-family: "Luckiest Guy", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 /* 마우스를 올렸을 때 색상 변경 */
@@ -110,20 +136,20 @@ h1 {
   /* border: 2px solid #ff4a4a; */
 
   /* 카드 살짝 위로 이동 */
-  transform: translateY(-5px);
+  transform: translateY(7px);
 
   /* 회색 그림자 처리 */
-  box-shadow: 0 0 7px 7px rgba(98, 98, 98, 0.3);
+  /* box-shadow: 0 0 7px 7px rgba(98, 98, 98, 0.3); */
 
   /* 분홍색 그림자 효과  */
-  /* box-shadow: 0 0 7px 7px rgba(255, 74, 74, 0.3); */
+  box-shadow: 0 0 7px 7px rgba(255, 74, 74, 0.3);
   /* 그림자 강조  */
   /* box-shadow: 0 8px 16px rgba(255, 74, 74, 0.3); */
   /* 카드가 위로 살짝 올라감 */
   /* transform: translateY(-10px); */
 
-  /* 그림자 강조 */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  /* 그림자 강조 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); */
 
   /* 애니메이션 부드럽게 적용 */
   transition: all 0.3s ease;
@@ -148,7 +174,7 @@ h1 {
   background-color: #0056b3;
 }
 
-/* 모달 스타일 추가 - creaete by 이지훈 */
+/* 모달 스타일 추가 */
 /* 기본 모달 스타일 */
 .modal {
   display: none; /* 기본적으로 보이지 않음 */
