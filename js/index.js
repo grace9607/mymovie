@@ -1,30 +1,25 @@
-import { BASE_URL, IMAGE_BASE_URL, LANGUAGE } from "./api.js";
+import { API_KEY, BASE_URL, IMAGE_BASE_URL, LANGUAGE } from "./index-api.js";
+import { setupLogoEvent, toggleBookmark, isMovieBookmarked } from "./index-ui.js";
 
 let currentPage = 1; // 현재 페이지를 추적하는 변수
 let isLoading = false; // 데이터 로딩 중인지 여부를 추적하는 변수
 let isSearchMode = false; // 검색 모드인지 여부를 추적하는 변수
 let searchQuery = ""; // 검색어를 저장하는 변수
 
-// 로고 요소 가져오기
-const logo = document.getElementById("logo");
+// 외부 상태 관리 객체
+const state = {
+  isSearchMode: { value: false },
+  currentPage: { value: 1 },
+  searchQuery: { value: "" },
+};
 
-// 로고 클릭 이벤트 추가
-logo.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  isSearchMode = false;
-  currentPage = 1;
-  searchQuery = "";
-
-  sessionStorage.removeItem("searchQuery");
-  updateURL("");
-
-  // 기존 영화 목록 초기화 (신규 추가)
-  const movieList = document.getElementById("movie-list");
-  movieList.innerHTML = ""; // 기존 영화 목록 제거
-
-  getPopularMovies();
-  window.scrollTo(0, 0);
+// 로고 클릭 이벤트 설정
+setupLogoEvent({
+  isSearchMode: state.isSearchMode,
+  currentPage: state.currentPage,
+  searchQuery: state.searchQuery,
+  updateURL,
+  getPopularMovies,
 });
 
 // 검색어 저장 및 URL 업데이트 함수
@@ -37,25 +32,6 @@ function updateURL(query) {
     isSearchMode = false;
   }
   window.history.pushState({}, "", url); // URL을 새로 갱신
-}
-
-// 북마크 추가 및 해제 기능
-function toggleBookmark(movie) {
-  let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
-
-  if (isMovieBookmarked(movie.id)) {
-    bookmarks = bookmarks.filter((item) => item.id !== movie.id); // 이미 북마크 되어 있으면 제거
-  } else {
-    bookmarks.push(movie); // 북마크 안 되어 있으면 추가
-  }
-
-  localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
-}
-
-// 특정 영화가 북마크되어 있는지 확인
-function isMovieBookmarked(movieId) {
-  const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
-  return bookmarks.some((movie) => movie.id === movieId);
 }
 
 // 영화목록 렌더링
@@ -96,7 +72,9 @@ function renderMovies(movies) {
     // ✅ 영화 카드 클릭 시 상세 페이지 이동
     movieCard.addEventListener("click", (event) => {
       if (!event.target.classList.contains("bookmark-btn")) {
-        window.location.href = `details.html?id=${id}`;
+        // window.location.href = `details.html?id=${id}`;
+        // 모달 열리도록 수정
+        openModal(id);
       }
     });
 
@@ -109,13 +87,12 @@ function renderMovies(movies) {
 
         const isBookmarked = isMovieBookmarked(movie.id); // 상태 확인 후 업데이트
         event.target.textContent = isBookmarked ? "💖" : "🤍";
+
       });
 
     // ✅ 영화 카드를 목록에 추가
     movieList.appendChild(movieCard);
   });
-
-  console.log(`${movies.length} movies rendered`);
 }
 
 // 인기 영화 목록 가져오기 (popular) 수정 노 필요
@@ -146,7 +123,7 @@ async function getPopularMovies() {
 }
 
 async function searchMovies() {
-  const query = document.getElementById("search-input").value;
+    const query = document.getElementById("search-input").value;
 
   if (!query) {
     isSearchMode = false;
@@ -244,6 +221,7 @@ function createLoadMoreButton() {
 
 // 페이지가 로드될 때 북마크 목록을 화면에 출력
 window.onload = function () {
+
   const storedQuery = sessionStorage.getItem("searchQuery"); // 저장된 검색어 가져오기
   const searchInput = document.getElementById("search-input");
 
@@ -272,3 +250,82 @@ window.onload = function () {
 
   createLoadMoreButton(); // '더 보기' 버튼 생성
 };
+
+
+// 모달 코드 처음 라인
+// 모달 요소 가져오기
+const modal = document.getElementById("movie-modal");
+const modalContent = document.getElementById("modal-movie-details");
+const closeModalButton = document.querySelector(".close-btn");
+
+// 모달 열기 함수
+function openModal(movieId) {
+  fetchMovieDetails(movieId); // 영화 상세 정보 가져오기
+  modal.classList.remove("hidden");
+  modal.style.display = "block"; 
+}
+
+// 모달 닫기 함수
+function closeModal() {
+  modal.classList.add("hidden");
+  modal.style.display = "none"; // 모달 숨기기
+  modalContent.innerHTML = ""; // 모달 내용을 초기화
+}
+
+// 상세 정보 가져오기
+async function fetchMovieDetails(movieId) {
+  const response = await fetch(
+    `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=ko&append_to_response=credits`
+  );
+  const data = await response.json();
+  renderMovieDetails(data);
+}
+
+// 영화 상세 정보 렌더링
+function renderMovieDetails(movie) {
+  console.log("상세정보 렌더링 시작");
+  const {
+    title,
+    poster_path,
+    vote_average,
+    overview,
+    release_date,
+    genres,
+    credits,
+  } = movie;
+  const cast = credits.cast
+    .slice(0, 5)
+    .map((actor) => actor.name)
+    .join(", ");
+
+  modalContent.innerHTML = `
+        <div class="movie-detail-card">
+            <img src="${
+              poster_path
+                ? IMAGE_BASE_URL + poster_path
+                : "https://via.placeholder.com/400x600"
+            }" alt="${title}">
+            <div class="details">
+                <h2>${title} <span class="rating">(${vote_average.toFixed(
+    1
+  )})</span></h2>
+                <p class="release-date">Release Date: ${release_date}</p>
+                <p class="genres">Genres: ${genres
+                  .map((genre) => genre.name)
+                  .join(", ")}</p>
+                <p class="overview">${overview}</p>
+                <p class="cast"><strong>Cast:</strong> ${cast}</p>
+            </div>
+        </div>
+    `;
+    console.log("여기까지?");
+}
+
+// 이벤트 리스너 추가
+closeModalButton.addEventListener("click", closeModal);
+window.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    closeModal(); // 모달 외부 클릭 시 닫기
+  }
+});
+// 모달 코드 마지막 라인

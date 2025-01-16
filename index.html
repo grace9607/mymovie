@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>popcorn Movies</title>
+    <link rel="stylesheet" href="css/index.css" />
+  </head>
+  <body>
+    <!-- 헤더 영역 -->
+    <header>
+        <div class="container">
+      <h1><a href="#" id="logo">popcorn movie</a></h1>
+    </header>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <main class="container">
+      <!-- 검색 영역 -->
+      <section class="search">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="영화 제목을 입력해 주세요."
+        />
+        <button>Search</button>
+      </section>
+
+      <!-- 영화 목록 영역 -->
+      <section class="movie-list-section">
+        <div class="movie-list" id="movie-list"></div>
+      </section>
+
+      <!-- 찜하기 버튼 (현재 비활성화 상태) -->
+      <section class="like-section">
+        <button class="like-button"></button>
+      </section>
+    </main>
+
+    <!-- 모달 영역 -->
+    <div
+      id="movie-modal"
+      class="modal hidden"
+      role="dialog"
+      aria-labelledby="modal-title"
+    >
+      <div class="modal-content">
+        <button class="close-btn" aria-label="Close">&times;</button>
+        <div id="modal-movie-details"></div>
+      </div>
+    </div>
+    <!-- 푸터 영역 -->
+    <footer class="footer">
+    <p>© 2025 popcorn Movies. All rights reserved.</p>
+    </footer>
+    <script src="js/index.js" type="module"></script>
+  </body>
+</html>
